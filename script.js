@@ -177,7 +177,7 @@ function respondControl(message) {
 
 window.handleFinalDDG = function(data) {
     if (currentTypingWrapper) currentTypingWrapper.remove();
-    let answer = data && data.AbstractText ? data.AbstractText : "I am in testing mode and still learning I can't answer everything try searching any word.;
+    let answer = data && data.AbstractText ? data.AbstractText : "I am in testing mode and still learning I can't answer everything try searching any word.😕";
     appendAiMessageWithTyping(answer);
 };
 
