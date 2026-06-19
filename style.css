@@ -1,0 +1,221 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* 🎨 थीम वेरिएबल्स */
+:root {
+    --bg-body: #f5f7fb;
+    --bg-container: #ffffff;
+    --bg-sidebar: #f0f4f9;
+    --text-main: #1f1f1f;
+    --text-sub: #5f6368;
+    --border-color: #e3e6ee;
+    --bg-msg-user: #e8f0fe;
+    --text-msg-user: #1a73e8;
+    --bg-msg-ai: #f1f3f4;
+    --bg-card: #ffffff;
+    --border-card: #dadce0;
+    /* 🌤️ लाइट मोड के लिए सॉफ्ट ग्लो इफेक्ट */
+    --chat-glow: drop-shadow(0 2px 6px rgba(26, 115, 232, 0.08)) drop-shadow(0 4px 12px rgba(147, 51, 234, 0.05));
+    --input-glow: 0 4px 15px rgba(26, 115, 232, 0.08);
+}
+
+/* 🌙 कॉस्मिक नाइट मोड इफ़ेक्ट */
+body.dark-mode {
+    --bg-body: #06070a;
+    --bg-container: #0d0f17;
+    --bg-sidebar: #131622;
+    --text-main: #e3e6ee;
+    --text-sub: #8b92a5;
+    --border-color: #1c1f30;
+    --bg-msg-user: linear-gradient(135deg, #1a73e8, #7c3aed);
+    --text-msg-user: #ffffff;
+    --bg-msg-ai: #1c1f30;
+    --bg-card: #131622;
+    --border-card: #25293e;
+    /* 🌌 नियॉन स्प्लैश डीप ग्लो */
+    --chat-glow: drop-shadow(0 0 10px rgba(26, 115, 232, 0.4)) drop-shadow(0 0 20px rgba(124, 58, 237, 0.2));
+    --input-glow: 0 0 15px rgba(26, 115, 232, 0.25), 0 0 25px rgba(124, 58, 237, 0.15);
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background 0.3s ease;
+}
+
+/* 🎬 स्प्लैश स्क्रीन */
+.splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #040610;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+}
+
+.full-screen-glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, rgba(26, 115, 232, 0.3) 0%, rgba(147, 51, 234, 0.2) 50%, rgba(4, 6, 16, 1) 100%);
+    z-index: 1;
+}
+
+.logo-wrapper {
+    position: relative;
+    z-index: 2;
+    width: 120px;
+    height: 120px;
+    animation: smoothReveal 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.logo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 24px;
+    filter: invert(1) drop-shadow(0 0 20px #1a73e8);
+}
+
+.brand-name {
+    margin-top: 16px;
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: #ffffff;
+    text-transform: uppercase;
+    z-index: 2;
+    text-shadow: 0 0 15px rgba(26, 115, 232, 0.6);
+}
+
+.owner-credit {
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: #8b92a5;
+    font-weight: 500;
+    letter-spacing: 1px;
+    z-index: 2;
+    animation: smoothReveal 1.5s ease-out forwards;
+}
+
+.loader-dots { position: absolute; bottom: 60px; display: flex; gap: 8px; z-index: 2; }
+.loader-dots span { width: 6px; height: 6px; background: #7c3aed; border-radius: 50%; animation: blink 1.2s infinite ease-in-out both; }
+.loader-dots span:nth-child(2) { animation-delay: 0.2s; }
+.loader-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+.app-container {
+    width: 100%;
+    max-width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    position: relative;
+}
+
+.chat-container {
+    flex: 1;
+    background: var(--bg-container);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+@media (min-width: 768px) {
+    body { padding: 20px; }
+    .app-container { max-width: 1100px; height: 90vh; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+    .sidebar { position: relative !important; left: 0 !important; box-shadow: none !important; border-right: 1px solid var(--border-color); }
+    .menu-btn-left { display: none !important; }
+}
+
+/* 🧭 साइडबार */
+.sidebar { position: fixed; top: 0; left: -260px; width: 260px; height: 100%; background: var(--bg-sidebar); z-index: 1000; transition: left 0.3s ease; padding: 20px; display: flex; flex-direction: column; }
+.sidebar.active { left: 0; }
+.sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.new-chat-btn { background: #e8f0fe; color: #1a73e8; border: none; padding: 10px 16px; border-radius: 20px; font-weight: 600; cursor: pointer; flex: 1; margin-right: 10px; }
+.close-sidebar-btn { background: transparent; border: none; font-size: 1.1rem; cursor: pointer; color: var(--text-sub); }
+.theme-toggle-btn { background: var(--bg-msg-ai); color: var(--text-main); border: 1px solid var(--border-card); padding: 8px; border-radius: 10px; cursor: pointer; margin-bottom: 20px; outline: none; }
+.history-title { font-size: 0.85rem; font-weight: 600; color: var(--text-sub); margin-bottom: 10px; text-transform: uppercase; }
+.history-list { flex: 1; overflow-y: auto; }
+.history-item { padding: 12px; background: transparent; border-radius: 10px; cursor: pointer; font-size: 0.9rem; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px; }
+.history-item:hover { background: var(--bg-msg-ai); }
+.sidebar-version { font-size: 0.75rem; color: var(--text-sub); text-align: center; padding-top: 10px; border-top: 1px solid var(--border-color); font-weight: bold; }
+.sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 999; }
+.sidebar-overlay.active { display: block; }
+
+.chat-header { background: var(--bg-container); padding: 14px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+.header-title { font-size: 1.2rem; font-weight: 600; color: var(--text-main); }
+.dropdown-content-right { display: none; position: absolute; top: 55px; right: 20px; background-color: var(--bg-container); min-width: 140px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-radius: 12px; z-index: 100; border: 1px solid var(--border-color); }
+.dropdown-content-right a { color: var(--text-main); padding: 12px 16px; text-decoration: none; display: block; cursor: pointer; }
+.dropdown-content-right a:hover { background-color: var(--bg-msg-ai); }
+
+/* 👋 वेलकम स्क्रीन */
+.welcome-screen { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; overflow-y: auto; width: 100%; }
+.greeting-text { font-size: 1.9rem; font-weight: 700; background: linear-gradient(45deg, #1a73e8, #9333ea); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; }
+.sub-text { color: var(--text-sub); font-size: 0.9rem; margin-bottom: 20px; }
+.ai-info-tabs { display: flex; gap: 8px; margin-bottom: 24px; }
+.info-tab { padding: 6px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+.info-tab.cap { background: #e6f4ea; color: #137333; }
+.info-tab.lim { background: #feefe3; color: #b06000; }
+
+.suggestions-grid { width: 100%; max-width: 500px; display: grid; grid-template-columns: 1fr; gap: 10px; }
+.card { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 14px; padding: 12px 16px; text-align: left; cursor: pointer; transition: all 0.2s ease; }
+.card:hover { border-color: #1a73e8; box-shadow: var(--input-glow); }
+.card h4 { color: #1a73e8; font-size: 0.9rem; margin-bottom: 2px; }
+.card p { color: var(--text-sub); font-size: 0.8rem; }
+
+/* 💬 चैट बॉक्स */
+.chat-box { display: none; flex: 1; padding: 20px; overflow-y: auto; background: var(--bg-container); }
+.message-wrapper { display: flex; margin-bottom: 14px; width: 100%; }
+
+.message { padding: 12px 16px; border-radius: 18px; max-width: 80%; font-size: 0.95rem; line-height: 1.5; word-wrap: break-word; filter: var(--chat-glow); }
+.user-message { background: var(--bg-msg-user); color: var(--text-msg-user); margin-left: auto; border-top-right-radius: 4px; }
+.ai-message { background: var(--bg-msg-ai); color: var(--text-main); margin-right: auto; border-top-left-radius: 4px; }
+
+.chat-image { max-width: 100%; max-height: 200px; border-radius: 12px; margin-top: 8px; display: block; cursor: pointer; }
+
+/* ✦ जेमिनी स्पार्कल */
+.snap-avatar-bubble { position: absolute; top: -50px; left: 20px; background: var(--bg-container); border: 1px solid var(--border-card); padding: 8px 16px; border-radius: 24px; display: flex; align-items: center; gap: 8px; box-shadow: var(--input-glow); }
+.gemini-sparkle { font-size: 1.2rem; background: linear-gradient(45deg, #1a73e8, #9333ea); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: spin 2s infinite linear; }
+.snap-typing-dots span { width: 4px; height: 4px; background: var(--text-sub); border-radius: 50%; animation: pulse 1s infinite alternate; }
+
+.voice-wave-container { position: absolute; top: -40px; left: 0; width: 100%; background: var(--bg-msg-user); padding: 8px 20px; display: flex; align-items: center; gap: 6px; }
+.wave-bar { width: 4px; height: 14px; background: #1a73e8; border-radius: 2px; animation: waveGo 0.6s infinite ease-in-out alternate; }
+.wave-text { font-size: 0.8rem; font-weight: 600; color: #1a73e8; }
+
+/* 📥 इनपुट एरिया */
+.input-container { padding: 12px 16px 16px 16px; background: var(--bg-container); border-top: 1px solid var(--border-color); position: relative; }
+.input-wrapper { display: flex; align-items: center; background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 28px; padding: 4px 6px; box-shadow: var(--input-glow); transition: border 0.2s ease; }
+.input-wrapper:focus-within { border-color: #1a73e8; }
+input { flex: 1; padding: 10px 12px; border: none; background: transparent; color: var(--text-main); font-size: 0.95rem; outline: none; }
+
+#voiceBtn, #sendBtn { border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; background: transparent; color: var(--text-sub); outline: none; }
+#sendBtn { background: #1a73e8; color: white; }
+.tts-button { background: var(--bg-msg-ai); border: none; width: 28px; height: 28px; border-radius: 50%; margin-left: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+.typing-loader span { width: 6px; height: 6px; background: var(--text-sub); border-radius: 50%; animation: pulse 1.4s infinite ease-in-out both; }
+@keyframes pulse { 0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; } 40% { transform: scale(1.2); opacity: 1; } }
+
+.image-modal { display: none; position: fixed; z-index: 100000; padding-top: 40px; left: 0; top: 0; width: 100vw; height: 100vh; background-color: rgba(4,6,16,0.96); backdrop-filter: blur(12px); }
+.modal-content { margin: auto; display: block; width: 85%; max-width: 700px; max-height: 80vh; object-fit: contain; border-radius: 12px; }
+.close-modal { position: absolute; top: 20px; right: 30px; color: #ffffff; font-size: 38px; cursor: pointer; }
+
+@keyframes smoothReveal { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+@keyframes waveGo { from { height: 4px; } to { height: 18px; } }
